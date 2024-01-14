@@ -1,20 +1,23 @@
 #include <Adafruit_NeoPixel.h>
 
-#define PIN 2    // Input-Pin which my WS2812B-Strip is connected to
-#define NUMPIXELS 29 // Count of LEDs on your strip
+#define PINS1 2    // Input-Pin which my first WS2812B-Strip is connected to
+#define PINS2 3    // Input-Pin which my second WS2812B-Strip is connected to
+#define NUMPIXELS 22 // Count of LEDs on your strip
 #define PIR_PIN 13  // PIR-Sensor-Pin
 
-Adafruit_NeoPixel pixels = Adafruit_NeoPixel(NUMPIXELS, PIN, NEO_GRB + NEO_KHZ800);
+Adafruit_NeoPixel Strip1 = Adafruit_NeoPixel(NUMPIXELS, PINS1, NEO_GRB + NEO_KHZ800);
+Adafruit_NeoPixel Strip2 = Adafruit_NeoPixel(NUMPIXELS, PINS2, NEO_GRB + NEO_KHZ800);
 
-bool devMode = true; // determines wheter the strip waits for 
+bool devMode = false; // determines wheter the strip waits for 
 int delayval = 50; // delay in ms between color switch of the single LEDs
 
 int redColor = 0;
 int greenColor = 0;
 int blueColor = 0;
-
+ 
 void setup() {
-  pixels.begin(); // Initialize NeoPixel-Library
+  Strip1.begin(); // Initialize the first LED Strip
+  Strip2.begin(); // Initialize the second LED Strip
   pinMode(PIR_PIN, INPUT); // Set PIR-Sensor as input
 }
 
@@ -29,9 +32,11 @@ void loop() {
     } else {
       // If PIR-Sensor isn't active, shut off all LEDs
       for (int i = 0; i < NUMPIXELS; i++) {
-        pixels.setPixelColor(i, pixels.Color(0, 0, 0));
+        // Turn off all LEDs
+        turnOff(i);
       }
-      pixels.show();
+      // Update LEDs to turn them off
+      show();
     }
   } else {
     changeColor();
@@ -50,10 +55,23 @@ void changeColor() {
   for (int i = 0; i <= 25; i++) {
     setColor();
     for (int i = 0; i < NUMPIXELS; i++) {
-        pixels.setPixelColor(i, pixels.Color(redColor, greenColor, blueColor));
-        pixels.show();
+        Strip1.setPixelColor(i, Strip1.Color(redColor, greenColor, blueColor));
+        Strip2.setPixelColor(i, Strip2.Color(redColor, greenColor, blueColor));
+        // Show colors
+        show();
         delay(delayval);
     }
-  }
-  
+  } 
+}
+
+// Turns off both LED Strips
+void turnOff(int i) {
+  Strip1.setPixelColor(i, Strip1.Color(0, 0, 0));
+  Strip2.setPixelColor(i, Strip2.Color(0, 0, 0));
+}
+
+// Updates the strip's state
+void show() {
+  Strip1.show();
+  Strip2.show();
 }
