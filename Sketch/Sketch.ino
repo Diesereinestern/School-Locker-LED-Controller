@@ -52,7 +52,7 @@ void setColor() {
 
 // The process of changing the LEDs color in a wave
 void changeColor() {
-  for (int i = 0; i <= 25; i++) {
+  for (int i = 0; i <= 5; i++) {
     setColor();
     for (int i = 0; i < NUMPIXELS; i++) {
         Strip1.setPixelColor(i, Strip1.Color(redColor, greenColor, blueColor));
